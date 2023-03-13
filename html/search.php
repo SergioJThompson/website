@@ -145,8 +145,7 @@
 </div>
 </body>
 
-<script src="/js/search.js"></script>
-<script src="/js/display-search-term.js"></script>
-<script src="/js/display-essay-hyperlinks.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/display-search-term.js"></script>
 
 </html>

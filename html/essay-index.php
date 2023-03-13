@@ -126,5 +126,5 @@
 
 </body>
 
-<script src="/new-website/js/search.js"></script>
+<script src="../js/search.js"></script>
 </html>
