@@ -129,15 +129,24 @@
         parse_str($queryString, $queryArray);
         $q = isset($queryArray['q']) ? $queryArray['q'] : null;
 
-        // Loop through categories and output each one along with its corresponding files
+        // Loop through categories to check if each has any matching files
         foreach ($categories as $category) {
-            echo "<h2><br>" . $category . "<br></h2>";
-            echo "<ul>";
+            $has_matching_files = false; // initialize flag variable
             foreach ($file_list[$category] as $file_info) {
-                if (!is_null($q) && strpos(strtolower($file_info["name"]), strtolower($q)) !== false)
-                    echo "<li><a href='" . $folder . $file_info["file"] . "'>" . $file_info["name"] . "</a></li>";
+                if (!is_null($q) && strpos(strtolower($file_info["name"]), strtolower($q)) !== false) {
+                    $has_matching_files = true; // update flag variable if there's a match
+                }
             }
-            echo "</ul>";
+            if ($has_matching_files) { // only echo category name if there are matching files
+                echo "<h2><br>" . $category . "<br></h2>";
+                echo "<ul>";
+                foreach ($file_list[$category] as $file_info) {
+                    if (!is_null($q) && strpos(strtolower($file_info["name"]), strtolower($q)) !== false) {
+                        echo "<li><a href='" . $folder . $file_info["file"] . "'>" . $file_info["name"] . "</a></li>";
+                    }
+                }
+                echo "</ul>";
+            }
         }
         ?>
     </ul>
