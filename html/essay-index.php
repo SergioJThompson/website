@@ -86,29 +86,11 @@
 
     <ul>
         <?php
+        include 'get-essay-metadata.php';
         $folder = "essays/";
-        $files = scandir($folder);
-        $categories = array();
-
-        // Loop through files to extract category and file name
-        foreach ($files as $file) {
-            if (pathinfo($file, PATHINFO_EXTENSION) == "html") {
-                $html = file_get_contents($folder . $file);
-
-                preg_match('/name="([^"]*)"\s/', $html, $match);
-                $name = isset($match[1]) ? $match[1] : "Essay";
-
-                preg_match('/content="(.*?)">/', $html, $match);
-                $current_category = isset($match[1]) ? $match[1] : "Uncategorized";
-
-                // Add new category to array if it doesn't already exist
-                if (!in_array($current_category, $categories)) {
-                    $categories[] = $current_category;
-                }
-
-                $file_list[$current_category][] = array("name" => $name, "file" => $file);
-            }
-        }
+        $result = get_file_list($folder);
+        $file_list = $result['file_list'];
+        $categories = $result['categories'];
 
         // Loop through categories and output each one along with its corresponding files
         foreach ($categories as $category) {

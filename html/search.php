@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- TODO: fix this duplication -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -85,30 +86,11 @@
 <div id="display-links"></div>
     <ul>
         <?php
-        // @todo clean this up, combine first part with essay-index.php
+        include 'get-essay-metadata.php';
         $folder = "essays/";
-        $files = scandir($folder);
-        $categories = array();
-
-        // Loop through files to extract category and file name
-        foreach ($files as $file) {
-            if (pathinfo($file, PATHINFO_EXTENSION) == "html") {
-                $html = file_get_contents($folder . $file);
-
-                preg_match('/name="([^"]*)"\s/', $html, $match);
-                $name = isset($match[1]) ? $match[1] : "Essay";
-
-                preg_match('/content="(.*?)">/', $html, $match);
-                $current_category = isset($match[1]) ? $match[1] : "Uncategorized";
-
-                // Add new category to array if it doesn't already exist
-                if (!in_array($current_category, $categories)) {
-                    $categories[] = $current_category;
-                }
-
-                $file_list[$current_category][] = array("name" => $name, "file" => $file);
-            }
-        }
+        $result = get_file_list($folder);
+        $file_list = $result['file_list'];
+        $categories = $result['categories'];
 
         // Get the current URL
         $currentUrl = "http";
@@ -127,7 +109,7 @@
 
         // Parse the query string to get the value of the "q" parameter
         parse_str($queryString, $queryArray);
-        $q = isset($queryArray['q']) ? $queryArray['q'] : null;
+        $q = isset($queryArray['q']) ? $queryArray['q'] : '';
 
         // Loop through categories to check if each has any matching files
         foreach ($categories as $category) {
@@ -135,6 +117,7 @@
             foreach ($file_list[$category] as $file_info) {
                 if (!is_null($q) && strpos(strtolower($file_info["name"]), strtolower($q)) !== false) {
                     $has_matching_files = true; // update flag variable if there's a match
+                    break;
                 }
             }
             if ($has_matching_files) { // only echo category name if there are matching files
